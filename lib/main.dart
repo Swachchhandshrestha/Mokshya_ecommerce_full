@@ -8,29 +8,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider.value(value: UserProvider.initialize()),
-    ChangeNotifierProvider.value(value: ProductProvider.initialize()),
-    ChangeNotifierProvider.value(value: AppProvider()),
-
-
-  ], child: MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-        primaryColor: Colors.purple
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: UserProvider.initialize()),
+      ChangeNotifierProvider.value(value: ProductProvider.initialize()),
+      ChangeNotifierProvider.value(value: AppProvider()),
+    ],
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primaryColor: Colors.purple),
+      home: ScreensController(),
     ),
-    home: ScreensController(),
-  ),));
+  ));
 }
 
 class ScreensController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context);
-    switch(user.status){
+    switch (user.status) {
       case Status.Uninitialized:
         return Splash();
       case Status.Unauthenticated:
@@ -38,11 +37,8 @@ class ScreensController extends StatelessWidget {
         return Login();
       case Status.Authenticated:
         return HomePage();
-      default: return Login();
+      default:
+        return Login();
     }
   }
 }
-
-
-
-

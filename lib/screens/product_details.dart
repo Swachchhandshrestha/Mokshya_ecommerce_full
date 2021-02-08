@@ -9,6 +9,7 @@ import 'package:mokshyauser/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class ProductDetails extends StatefulWidget {
   final ProductModel product;
@@ -98,13 +99,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                           // Add one stop for each color. Stops should increase from 0 to 1
                           colors: [
                             // Colors are easy thanks to Flutter's Colors class.
-                            Colors.black.withOpacity(0.8),
-                            Colors.black.withOpacity(0.6),
-                            Colors.black.withOpacity(0.6),
-                            Colors.black.withOpacity(0.4),
-                            Colors.black.withOpacity(0.07),
-                            Colors.black.withOpacity(0.05),
-                            Colors.black.withOpacity(0.025),
+                            // Colors.purple.withOpacity(0.8),
+                            //Colors.purple.withOpacity(0.6),
+                            // Colors.purple.withOpacity(0.6),
+                            Colors.purple.withOpacity(0.4),
+                            Colors.purple.withOpacity(0.07),
+                            Colors.purple.withOpacity(0.05),
+                            Colors.purple.withOpacity(0.025),
                           ],
                         ),
                       ),
@@ -130,12 +131,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(5.0),
                             child: Text(
                               '\Rs${widget.product.price}',
                               textAlign: TextAlign.end,
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.redAccent,
                                   fontSize: 26,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -159,7 +160,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 borderRadius: BorderRadius.circular(20)),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Icon(Icons.shopping_cart),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: Colors.black,
+                              ),
                             ),
                           )),
                     ),
@@ -203,7 +207,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.black,
+                          color: HexColor("#660099"),
                           offset: Offset(2, 5),
                           blurRadius: 10)
                     ]),

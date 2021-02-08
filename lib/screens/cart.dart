@@ -1,3 +1,4 @@
+import 'package:hexcolor/hexcolor.dart';
 import 'package:mokshyauser/helpers/style.dart';
 import 'package:mokshyauser/models/cart_item.dart';
 import 'package:mokshyauser/provider/app.dart';
@@ -27,11 +28,14 @@ class _CartScreenState extends State<CartScreen> {
       key: _key,
       appBar: AppBar(
         iconTheme: IconThemeData(color: black),
-        backgroundColor: white,
+        backgroundColor: HexColor("#660099"),
         elevation: 0.0,
-        title: CustomText(text: "Shopping Cart"),
+        title: CustomText(
+          text: "Shopping Cart",
+          color: Colors.white,
+        ),
         leading: IconButton(
-            icon: Icon(Icons.close),
+            icon: Icon(Icons.close, color: Colors.white),
             onPressed: () {
               Navigator.pop(context);
             }),
@@ -137,20 +141,21 @@ class _CartScreenState extends State<CartScreen> {
                   TextSpan(
                       text: "Total: ",
                       style: TextStyle(
-                          color: grey,
+                          color: HexColor("#6B01A0"),
                           fontSize: 22,
                           fontWeight: FontWeight.w400)),
                   TextSpan(
-                      text: " \Rs${userProvider.userModel.totalCartPrice }",
+                      text: " \Rs${userProvider.userModel.totalCartPrice}",
                       style: TextStyle(
-                          color: black,
+                          color: Colors.redAccent,
                           fontSize: 22,
                           fontWeight: FontWeight.normal)),
                 ]),
               ),
               Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20), color: black),
+                    borderRadius: BorderRadius.circular(20),
+                    color: HexColor("#6B01A0")),
                 child: FlatButton(
                     onPressed: () {
                       if (userProvider.userModel.totalCartPrice == 0) {

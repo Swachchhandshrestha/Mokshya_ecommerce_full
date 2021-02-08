@@ -41,7 +41,9 @@ class UserProvider with ChangeNotifier {
     try {
       _status = Status.Authenticating;
       notifyListeners();
-      await _auth.signInWithEmailAndPassword(email: email, password: password).then((value) async{
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
         _userModel = await _userServices.getUserById(value.user.uid);
         notifyListeners();
       });
@@ -60,17 +62,16 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((user) async{
-            print("CREATE USER");
+          .then((user) async {
+        print("CREATE USER");
         _userServices.createUser({
           'name': name,
           'email': email,
           'uid': user.user.uid,
           'stripeId': ''
         });
-            _userModel = await _userServices.getUserById(user.user.uid);
-            notifyListeners();
-
+        _userModel = await _userServices.getUserById(user.user.uid);
+        notifyListeners();
       });
       return true;
     } catch (e) {
@@ -129,25 +130,24 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> removeFromCart({CartItemModel cartItem})async{
+  Future<bool> removeFromCart({CartItemModel cartItem}) async {
     print("THE PRODUC IS: ${cartItem.toString()}");
 
-    try{
+    try {
       _userServices.removeFromCart(userId: _user.uid, cartItem: cartItem);
       return true;
-    }catch(e){
+    } catch (e) {
       print("THE ERROR ${e.toString()}");
       return false;
     }
-
   }
 
-  getOrders()async{
+  getOrders() async {
     orders = await _orderServices.getUserOrders(userId: _user.uid);
     notifyListeners();
   }
 
-  Future<void> reloadUserModel()async{
+  Future<void> reloadUserModel() async {
     _userModel = await _userServices.getUserById(user.uid);
     notifyListeners();
   }

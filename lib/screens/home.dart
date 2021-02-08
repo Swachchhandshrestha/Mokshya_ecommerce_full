@@ -4,6 +4,7 @@ import 'package:mokshyauser/helpers/style.dart';
 import 'package:mokshyauser/provider/product.dart';
 import 'package:mokshyauser/provider/user.dart';
 import 'package:mokshyauser/screens/product_search.dart';
+import 'package:mokshyauser/screens/profile.dart';
 import 'package:mokshyauser/services/product.dart';
 import 'package:mokshyauser/widgets/custom_text.dart';
 import 'package:mokshyauser/widgets/featured_products.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:mokshyauser/screens/login.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 import 'cart.dart';
 import 'order.dart';
@@ -50,7 +52,7 @@ class _HomePageState extends State<HomePage> {
         ],
         autoplay: true,
         animationCurve: Curves.fastOutSlowIn,
-        dotSize: 4.0,
+        dotSize: 5.0,
         indicatorBgPadding: 10.0,
         animationDuration: Duration(
           microseconds: 500,
@@ -62,13 +64,63 @@ class _HomePageState extends State<HomePage> {
     final productProvider = Provider.of<ProductProvider>(context);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: HexColor("#660099"),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 25.0,
+              backgroundImage: AssetImage("images/logowhite.jpg"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                },
+                child: Text("Mokshya Store"),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          new IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CartScreen()));
+            },
+          ),
+          new IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()));
+            },
+          ),
+          new IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              _key.currentState.openEndDrawer();
+            },
+          ),
+        ],
+      ),
       key: _key,
       backgroundColor: white,
       endDrawer: Drawer(
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: black),
+              decoration: BoxDecoration(
+                color: HexColor("#6B01A0"),
+              ),
+              currentAccountPicture: Center(
+                  child: CircleAvatar(
+                radius: 50.0,
+                backgroundImage: AssetImage("images/background.jpg"),
+              )),
               accountName: CustomText(
                 text: userProvider.userModel?.name ?? "username lading...",
                 color: white,
@@ -90,6 +142,14 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               onTap: () {
+                // userProvider.getProfile();
+                changeScreen(context, ProfileScreen());
+              },
+              leading: Icon(Icons.person),
+              title: CustomText(text: "My Profile"),
+            ),
+            ListTile(
+              onTap: () {
                 userProvider.signOut();
                 changeScreenReplacement(context, Login());
               },
@@ -99,151 +159,139 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        iconSize: 20.0,
+        selectedFontSize: 17,
+        unselectedFontSize: 15.0,
+        selectedItemColor: HexColor("#0360BC"),
+        unselectedItemColor: HexColor("#660099"),
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.message),
+            title: new Text('Messages'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.shopping_cart),
+            title: new Text('Cart'),
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), title: Text('Profile'))
+        ],
+        onTap: (index) {
+          _currentIndex = index;
+          setState(() {
+            //Navigator.push(context, MaterialPageRoute(builder: (context)=>_children[_currentIndex]));
+          });
+        },
+      ),
       body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-//           Custom App bar
-            Stack(
-              children: <Widget>[
-                Positioned(
-                  top: 10,
-                  right: 20,
-                  child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                          onTap: () {
-                            _key.currentState.openEndDrawer();
-                          },
-                          child: Icon(Icons.menu))),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 60,
-                  child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                          onTap: () {
-                            changeScreen(context, CartScreen());
-                          },
-                          child: Icon(Icons.shopping_cart))),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 100,
-                  child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                          onTap: () {
-                            _key.currentState.showSnackBar(
-                                SnackBar(content: Text("User profile")));
-                          },
-                          child: Icon(Icons.person))),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Mokshya Store',
-                    style: TextStyle(
-                        fontSize: 21,
-                        color: Colors.purple[700],
-                        fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
-            ),
-
-            
-
+        child: Container(
+          color: HexColor("#E5FAFB"),
+          child: ListView(
+            children: <Widget>[
 //          Search Text field
-          //  Search(),
+              //  Search(),
 
-            Container(
-              decoration: BoxDecoration(
-                  color: white,
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 8, left: 8, right: 8, bottom: 10),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: grey.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.search,
-                      color: black,
+              Container(
+                decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(20))),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8, left: 8, right: 8, bottom: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: grey.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    title: TextField(
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (pattern) async {
-                        await productProvider.search(productName: pattern);
-                        changeScreen(context, ProductSearchScreen());
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Search Products",
-                        border: InputBorder.none,
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.search,
+                        color: black,
+                      ),
+                      title: TextField(
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (pattern) async {
+                          await productProvider.search(productName: pattern);
+                          changeScreen(context, ProductSearchScreen());
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Search Products",
+                          border: InputBorder.none,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            image_carousal,
+              image_carousal,
 
-            Padding(
-              //padding widget for Categories
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                'OUR CATAGORIES',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    fontSize: 15),
+              Padding(
+                //padding widget for Categories
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  'OUR CATAGORIES',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                      fontSize: 15),
+                ),
               ),
-            ),
-            //horizontal list view remains here
-            HorizontalList(),
+              //horizontal list view remains here
+              HorizontalList(),
 
 //            featured products
-            Padding(
-              //padding widget for Categories
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                'FEATURED PRODUCT',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    fontSize: 15),
+              Padding(
+                //padding widget for Categories
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  'FEATURED PRODUCT',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                      fontSize: 15),
+                ),
               ),
-            ),
-            FeaturedProducts(),
+              FeaturedProducts(),
 
 //          recent products
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: new Text('RECENT PRODUCT')),
-                ),
-              ],
-            ),
-
-            Column(
-              children: productProvider.products
-                  .map((item) => GestureDetector(
-                        child: ProductCard(
-                          product: item,
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: new Text(
+                          'RECENT PRODUCT',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                              fontSize: 15),
                         ),
-                      ))
-                  .toList(),
-            )
-          ],
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: productProvider.products
+                    .map((item) => GestureDetector(
+                          child: ProductCard(
+                            product: item,
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
