@@ -5,19 +5,23 @@ import 'package:mokshyauser/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class FeaturedCard extends StatelessWidget {
+class FeaturedCard extends StatefulWidget {
   final ProductModel product;
 
   const FeaturedCard({Key key, this.product}) : super(key: key);
 
+  @override
+  _FeaturedCardState createState() => _FeaturedCardState();
+}
 
+class _FeaturedCardState extends State<FeaturedCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(4),
       child: InkWell(
         onTap: (){
-          changeScreen(context, ProductDetails(product: product,));
+          changeScreen(context, ProductDetails(product: widget.product,));
         },
         child: Container(
           decoration: BoxDecoration(
@@ -42,7 +46,7 @@ class FeaturedCard extends StatelessWidget {
                 Center(
                   child: FadeInImage.memoryNetwork(
                     placeholder: kTransparentImage,
-                    image: product.picture,
+                    image: widget.product.picture,
                     fit: BoxFit.cover,
                     height: 220,
                     width: 200,
@@ -87,8 +91,8 @@ class FeaturedCard extends StatelessWidget {
                   child: Padding(
                       padding: const EdgeInsets.only(left:8.0),
                       child: RichText(text: TextSpan(children: [
-                        TextSpan(text: '${product.name} \n', style: TextStyle(fontSize: 18)),
-                        TextSpan(text: '\Rs${product.price} \n', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                        TextSpan(text: '${widget.product.name} \n', style: TextStyle(fontSize: 18)),
+                        TextSpan(text: '\Rs${widget.product.price} \n', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
 
                       ]))
                   ),

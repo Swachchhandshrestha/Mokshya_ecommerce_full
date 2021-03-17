@@ -3,10 +3,13 @@ import 'package:mokshyauser/helpers/common.dart';
 import 'package:mokshyauser/helpers/style.dart';
 import 'package:mokshyauser/provider/product.dart';
 import 'package:mokshyauser/provider/user.dart';
+import 'package:mokshyauser/screens/notification.dart';
 import 'package:mokshyauser/screens/product_search.dart';
 import 'package:mokshyauser/screens/profile.dart';
 import 'package:mokshyauser/services/product.dart';
+import 'package:mokshyauser/widgets/buttom_nav_all.dart';
 import 'package:mokshyauser/widgets/custom_text.dart';
+import 'package:mokshyauser/widgets/featured_card.dart';
 import 'package:mokshyauser/widgets/featured_products.dart';
 import 'package:mokshyauser/widgets/horizontal_listview.dart';
 import 'package:mokshyauser/widgets/product_card.dart';
@@ -16,7 +19,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:mokshyauser/screens/login.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+import 'package:mokshyauser/screens/cart.dart';
+import 'package:mokshyauser/services/push_notification_service.dart';
 import 'cart.dart';
 import 'order.dart';
 
@@ -26,14 +30,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-
-  void onTappedBar(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   final _key = GlobalKey<ScaffoldState>();
   ProductServices _productServices = ProductServices();
 
@@ -77,7 +73,7 @@ class _HomePageState extends State<HomePage> {
               child: InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => FeaturedCard()));
                 },
                 child: Text("Mokshya Store"),
               ),
@@ -151,7 +147,6 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               onTap: () {
                 userProvider.signOut();
-                changeScreenReplacement(context, Login());
               },
               leading: Icon(Icons.exit_to_app),
               title: CustomText(text: "Log out"),
@@ -159,37 +154,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        iconSize: 20.0,
-        selectedFontSize: 17,
-        unselectedFontSize: 15.0,
-        selectedItemColor: HexColor("#0360BC"),
-        unselectedItemColor: HexColor("#660099"),
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.message),
-            title: new Text('Messages'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.shopping_cart),
-            title: new Text('Cart'),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), title: Text('Profile'))
-        ],
-        onTap: (index) {
-          _currentIndex = index;
-          setState(() {
-            //Navigator.push(context, MaterialPageRoute(builder: (context)=>_children[_currentIndex]));
-          });
-        },
-      ),
+      bottomNavigationBar: ButtomNav(),
       body: SafeArea(
         child: Container(
           color: HexColor("#E5FAFB"),
@@ -250,15 +215,25 @@ class _HomePageState extends State<HomePage> {
               HorizontalList(),
 
 //            featured products
+
               Padding(
                 //padding widget for Categories
                 padding: EdgeInsets.all(10.0),
-                child: Text(
-                  'FEATURED PRODUCT',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                      fontSize: 15),
+
+                child: InkWell(
+                  // onTap: () {
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => FeaturedCard()));
+                  // },
+                  child: Text(
+                    'FEATURED PRODUCT',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        fontSize: 15),
+                  ),
                 ),
               ),
               FeaturedProducts(),
@@ -269,14 +244,14 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(14.0),
                     child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: new Text(
-                          'RECENT PRODUCT',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                              fontSize: 15),
-                        ),
+                      alignment: Alignment.centerLeft,
+                      child: new Text(
+                        'RECENT PRODUCT',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                            fontSize: 15),
+                      ),
                     ),
                   ),
                 ],

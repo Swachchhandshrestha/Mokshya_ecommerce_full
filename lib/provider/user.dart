@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mokshyauser/models/cart_item.dart';
 import 'package:mokshyauser/models/order.dart';
 import 'package:mokshyauser/models/product.dart';
@@ -20,8 +21,16 @@ class UserProvider with ChangeNotifier {
   Status _status = Status.Uninitialized;
   UserServices _userServices = UserServices();
   OrderServices _orderServices = OrderServices();
-
   UserModel _userModel;
+
+  // added
+  final googleSignIn = GoogleSignIn();
+  bool _isSigningIn;
+
+  GoogleSignInProvider() {
+    _isSigningIn = false;
+  }
+  //**** */
 
 //  getter
   UserModel get userModel => _userModel;
@@ -29,6 +38,41 @@ class UserProvider with ChangeNotifier {
   Status get status => _status;
 
   User get user => _user;
+
+  //added
+  bool get isSigningIn => _isSigningIn;
+
+  //setter
+  set isSigningIn(bool isSigningIn) {
+    _isSigningIn = isSigningIn;
+    notifyListeners();
+  }
+
+  Future login() async {
+    isSigningIn = true;
+
+    final user = await googleSignIn.signIn();
+    if (user == null) {
+      isSigningIn = false;
+      return;
+    } else {
+      final googleAuth = await user.authentication;
+      
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      _status = Status.Authenticated;
+      notifyListeners();
+
+      isSigningIn = false;
+    }
+  }
+
+  //** */
 
   // public variables
   List<OrderModel> orders = [];
@@ -82,11 +126,11 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future signOut() async {
-    _auth.signOut();
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    googleSignIn.signOut();
     _status = Status.Unauthenticated;
     notifyListeners();
-    return Future.delayed(Duration.zero);
   }
 
   Future<void> _onStateChanged(User user) async {

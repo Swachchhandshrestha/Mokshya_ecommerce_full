@@ -4,6 +4,7 @@ import 'package:mokshyauser/models/cart_item.dart';
 import 'package:mokshyauser/provider/app.dart';
 import 'package:mokshyauser/provider/user.dart';
 import 'package:mokshyauser/services/order.dart';
+import 'package:mokshyauser/widgets/buttom_nav_all.dart';
 import 'package:mokshyauser/widgets/custom_text.dart';
 import 'package:mokshyauser/widgets/loading.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final appProvider = Provider.of<AppProvider>(context);
+    int cartCount = 1;
 
     return Scaffold(
       key: _key,
@@ -123,13 +125,13 @@ class _CartScreenState extends State<CartScreen> {
                                   })
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                 );
               }),
-      bottomNavigationBar: Container(
+      bottomSheet: Container(
         height: 70,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -288,10 +290,13 @@ class _CartScreenState extends State<CartScreen> {
                       weight: FontWeight.normal,
                     )),
               )
+
             ],
+            
           ),
         ),
       ),
+        bottomNavigationBar: ButtomNav(),
     );
   }
 }

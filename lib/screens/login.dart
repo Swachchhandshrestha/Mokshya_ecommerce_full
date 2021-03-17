@@ -20,6 +20,7 @@ class _LoginState extends State<Login> {
 
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
+  bool hidePass = true;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class _LoginState extends State<Login> {
                 ),
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 250.0),
+                    padding: const EdgeInsets.only(top: 300.0),
                     child: Center(
                       child: Form(
                         key: _formKey,
@@ -105,14 +106,14 @@ class _LoginState extends State<Login> {
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        Pattern pattern =
-                                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                        RegExp regex = new RegExp(pattern);
-                                        if (!regex.hasMatch(value))
-                                          return 'Please make sure your email address is valid';
-                                        else
-                                          return null;
+                                        return 'Email is required';
                                       }
+                                      Pattern pattern =
+                                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                      RegExp regex = new RegExp(pattern);
+                                      if (!(regex.hasMatch(value)))
+                                        return "Invalid Email";
+                                      return null;
                                     },
                                   ),
                                 ),
@@ -122,25 +123,35 @@ class _LoginState extends State<Login> {
                               padding: const EdgeInsets.fromLTRB(
                                   14.0, 8.0, 14.0, 8.0),
                               child: Material(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.white.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(50.0),
+                                color: Colors.white.withOpacity(0.20),
                                 elevation: 0.0,
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 12.0),
-                                  child: TextFormField(
-                                    controller: _password,
-                                    decoration: InputDecoration(
-                                      hintText: "Password",
-                                      icon: Icon(Icons.lock_outline),
+                                  child: ListTile(
+                                    title: TextFormField(
+                                      controller: _password,
+                                      obscureText: hidePass,
+                                      decoration: InputDecoration(
+                                        hintText: "Password",
+                                        icon: Icon(Icons.lock_outline),
+                                      ),
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return "The password field cannot be empty";
+                                        } else if (value.length < 6) {
+                                          return "the password has to be at least 6 characters long";
+                                        }
+                                        return null;
+                                      },
                                     ),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return "The password field cannot be empty";
-                                      } else if (value.length < 6) {
-                                        return "the password has to be at least 6 characters long";
-                                      }
-                                      return null;
-                                    },
+                                    trailing: IconButton(
+                                        icon: Icon(Icons.remove_red_eye),
+                                        onPressed: () {
+                                          setState(() {
+                                            hidePass = !hidePass;
+                                          });
+                                        }),
                                   ),
                                 ),
                               ),
@@ -154,6 +165,7 @@ class _LoginState extends State<Login> {
                                   elevation: 0.0,
                                   child: MaterialButton(
                                     onPressed: () async {
+                                      
                                       if (_formKey.currentState.validate()) {
                                         if (!await user.signIn(
                                             _email.text, _password.text))
@@ -183,7 +195,13 @@ class _LoginState extends State<Login> {
                                   elevation: 0.0,
                                   child: OutlineButton(
                                     splashColor: Colors.grey,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                     
+                                      final provider =
+                                          Provider.of<UserProvider>(context,
+                                              listen: false);
+                                      provider.login();
+                                    },
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(40)),

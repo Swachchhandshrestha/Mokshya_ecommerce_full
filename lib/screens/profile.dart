@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:mokshyauser/widgets/buttom_nav_all.dart';
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => new _ProfileScreenState();
@@ -9,6 +10,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+              bottomNavigationBar: ButtomNav(),
+
         body: new Stack(
       children: <Widget>[
         ClipPath(
